@@ -1,0 +1,30 @@
+name: Build PAX Android APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Configure Expo
+        run: npx expo install --check
+      - name: Install EAS CLI
+        run: npm install --global eas-cli
+      - name: Build APK on Expo
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_API_URL: ${{ vars.EXPO_PUBLIC_API_URL }}
+        run: |
+          test -n "$EXPO_TOKEN" || (echo "Add EXPO_TOKEN in GitHub Actions secrets." && exit 1)
+          test -n "$EXPO_PUBLIC_API_URL" || (echo "Add EXPO_PUBLIC_API_URL in GitHub Actions variables." && exit 1)
+          npx eas-cli build --platform android --profile preview --non-interactive --wait
