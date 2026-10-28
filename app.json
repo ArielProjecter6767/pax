@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "PAX",
+    "slug": "pax-messenger",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.arielprojecter.pax",
+      "versionCode": 1,
+      "permissions": ["INTERNET", "CAMERA", "RECORD_AUDIO"]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
