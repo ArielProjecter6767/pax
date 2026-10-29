@@ -110,7 +110,7 @@ def user_from_token(token: str, database_obj=None):
             raise ValueError("Missing subject")
     except (JWTError, ValueError):
         raise HTTPException(status_code=401, detail="Invalid or expired access token.")
-    d = database_obj or database()
+    d = database_obj if database_obj is not None else database()
     from bson import ObjectId
     try:
         user = d.users.find_one({"_id": ObjectId(user_id)})
