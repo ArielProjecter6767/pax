@@ -9,6 +9,8 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pathlib import Path
+from fastapi.responses import FileResponse, HTMLResponse
 from jose import jwt, JWTError
 from pydantic import BaseModel, EmailStr, Field
 from pymongo import MongoClient, DESCENDING
@@ -197,6 +199,50 @@ class ConnectionManager:
 
 
 manager = ConnectionManager()
+
+
+
+PREVIEW_PAGE = Path(__file__).resolve().with_name("preview.html")
+PREVIEW_WINDOWS_DIR = Path(__file__).resolve().parent.parent / "windows"
+
+
+@app.get("/preview", include_in_schema=False)
+@app.get("/preview/", include_in_schema=False)
+def preview_page():
+    if not PREVIEW_PAGE.is_file():
+        raise HTTPException(status_code=404, detail="Preview page is not installed.")
+    return FileResponse(
+        str(PREVIEW_PAGE),
+        media_type="text/html",
+        headers={"Cache-Control": "no-store"},
+    )
+
+
+@app.get("/preview/windows/", include_in_schema=False)
+def preview_windows_page():
+    page = PREVIEW_WINDOWS_DIR / "index.html"
+    if not page.is_file():
+        raise HTTPException(status_code=404, detail="Windows preview files are missing.")
+    html = page.read_text(encoding="utf-8")
+    html = html.replace('href="styles.css"', 'href="/preview/windows/styles.css"')
+    html = html.replace('src="renderer.js"', 'src="/preview/windows/renderer.js"')
+    return HTMLResponse(content=html, headers={"Cache-Control": "no-store"})
+
+
+@app.get("/preview/windows/{asset_name}", include_in_schema=False)
+def preview_windows_asset(asset_name: str):
+    allowed_assets = {
+        "styles.css": (PREVIEW_WINDOWS_DIR / "styles.css", "text/css"),
+        "renderer.js": (PREVIEW_WINDOWS_DIR / "renderer.js", "text/javascript"),
+    }
+    asset = allowed_assets.get(asset_name)
+    if asset is None or not asset[0].is_file():
+        raise HTTPException(status_code=404, detail="Preview asset not found.")
+    return FileResponse(
+        str(asset[0]),
+        media_type=asset[1],
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/")
