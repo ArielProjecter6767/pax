@@ -43,7 +43,7 @@
   <div class="grid" id="windowsPanel">
     <section class="panel">
       <div class="panelhead"><div><h2>Windows · интерактивный интерфейс</h2><p>Загружается тот же index.html, renderer.js и styles.css, что используются desktop-клиентом</p></div><span class="tag">Web sandbox</span></div>
-      <div class="stage"><div class="frame"><iframe id="windowsFrame" src="/preview/windows/" title="PAX Windows renderer preview" allow="camera; microphone; clipboard-read; clipboard-write"></iframe></div><p class="hint">Проверяется реальный интерфейс Windows-клиента в браузерной оболочке. Сам Electron-контейнер и установщик MSI здесь не запускаются; звонки в браузере также зависят от разрешений камеры/микрофона.</p></div>
+      <div class="stage"><div class="frame"><iframe id="windowsFrame" title="PAX Windows renderer preview" allow="camera; microphone; clipboard-read; clipboard-write"></iframe></div><p class="hint">Проверяется реальный интерфейс Windows-клиента в браузерной оболочке. Сам Electron-контейнер и установщик MSI здесь не запускаются; звонки в браузере также зависят от разрешений камеры/микрофона.</p></div>
     </section>
     <aside class="panel">
       <div class="info">
@@ -111,6 +111,8 @@ npx eas-cli build --platform android --profile preview</pre>
 </div>
 <script>
 const $=id=>document.getElementById(id);
+// Point the browser preview at this preview deployment, not the production API.
+$("windowsFrame").src="/preview/windows/?api="+encodeURIComponent(location.origin);
 function setPlatform(platform){
  const win=platform==="windows";
  $("windowsPanel").hidden=!win;$("androidPanel").hidden=win;
