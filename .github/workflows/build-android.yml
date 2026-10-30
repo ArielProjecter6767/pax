@@ -2,6 +2,9 @@ name: Build PAX Android APK
 
 on:
   workflow_dispatch:
+  push:
+    branches: [fix/windows-auth-calls-20261030]
+    paths: ["App.js", "app.json", "package.json", "package-lock.json", "eas.json", ".github/workflows/build-android.yml"]
 
 jobs:
   build:
