@@ -469,7 +469,7 @@ async def send_group_message(group_id: str, body: GroupMessageInput, user=Depend
 
 
 @app.patch("/api/messages/{message_id}")
-def edit_message(message_id: str, body: MessageEditInput, user=Depends(current_user), d=Depends(database)):
+async def edit_message(message_id: str, body: MessageEditInput, user=Depends(current_user), d=Depends(database)):
     from bson import ObjectId
     try:
         oid = ObjectId(message_id)
