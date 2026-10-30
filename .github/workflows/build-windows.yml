@@ -2,7 +2,7 @@ name: Build PAX for Windows
 on:
   workflow_dispatch:
   push:
-    branches: [feature/groups-calls-windows]
+    branches: [main, feature/groups-calls-windows, fix/windows-auth-calls-20261030]
     paths: ["windows/**", ".github/workflows/build-windows.yml"]
 permissions:
   contents: read
